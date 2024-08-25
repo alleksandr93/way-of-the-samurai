@@ -10,11 +10,7 @@
     grid-template-columns: 2fr 10fr;
     /*grid-gap: 10px;*/
 }
-
-
-
-.nav {
-    grid-area: n;
-    background-color: burlywood;
+.app-wrapper-content{
+    grid-area: c;
+    background-color: cornflowerblue;
 }
-

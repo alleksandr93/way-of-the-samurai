@@ -5,7 +5,7 @@ import {MyPosts} from './MyPosts/MyPosts';
 
 export const Profile = () => {
     return (
-        <div className={S.content}>
+        <div>
             <div className={S.imgContent}>
                 <img src="https://static01.nyt.com/images/2012/05/06/nyregion/06BIG_SPAN/BIG-superJumbo.jpg"
                      alt=""/>
