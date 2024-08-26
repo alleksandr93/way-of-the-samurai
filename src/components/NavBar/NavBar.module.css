@@ -9,20 +9,23 @@
     padding-top: 40px;
 }
 
-.item {
+.item a {
     margin-top: 8px;
     transition: 0.3s ease;
-
+    color: white;
+    text-decoration: none;
 }
-.item.active {
+
+.item a.activeLink  {
     color: gold;
 }
 
 .item:hover {
-  text-shadow: 1px 1px 2px #000;
+    text-shadow: 1px 1px 2px #000;
     text-decoration: underline;
     cursor: pointer;
 }
+
 .item:last-child {
-margin-top: 40px;
+    margin-top: 40px;
 }
