@@ -1,43 +1,40 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import S from './Dialogs.module.css'
 import {NavLink} from 'react-router-dom';
+import {DialogItem} from './DialogItem/DialogsItem';
+import {Message} from './Message/Message';
+import {DialogsType, MessagesType} from '../../App';
 
 
-type DialogsPropsType = {}
-export const Dialogs = ({}: DialogsPropsType) => {
+type DialogsPropsType = {
+    dialogs:DialogsType[]
+    messages:MessagesType[]
+
+}
+export const Dialogs = ({dialogs,messages,}: DialogsPropsType) => {
+    const addMessage=()=>{
+        if(areaRef.current){
+            alert(areaRef.current.value)
+        }
+    }
+    const areaRef=useRef<HTMLTextAreaElement>(null)
+    const dialogsElements = dialogs.map(el => <DialogItem name={el.name} id={el.id} key={el.id}/>)
+    const messangesElements = messages.map(el => <Message message={el.message} key={el.id}/>)
     return (
         <div className={S.dialogs}>
             <div className={S.dialogsItems}>
-               <DialogItem name={'Dimych'} id={'1'}/>
-               <DialogItem name={'Andrey'} id={'2'}/>
-               <DialogItem name={'Sveta'} id={'3'}/>
-               <DialogItem name={'Sasha'} id={'4'}/>
-               <DialogItem name={'Viktor'} id={'5'}/>
-               <DialogItem name={'Valera'} id={'6'}/>
+                {dialogsElements}
             </div>
             <div className={S.messages}>
-                <Message message={'Hi'}/>
-                <Message message={'How is your it-kamasutra?'}/>
-                <Message message={'Yo'}/>
+                {messangesElements}
+            </div>
+            <div>
+                <textarea ref={areaRef}></textarea>
+                <button onClick={addMessage}>Add Message</button>
             </div>
         </div>
     );
 };
 
-type DialogItemPropsType = {
-    name: string,
-    id:string
-}
-const DialogItem = ({name,id}:DialogItemPropsType) => {
-    const path = '/dialogs/'+id
-    return <div className={`${S.dialog} ${S.active}`}>
-        <NavLink  to={path}>{name}</NavLink>
-    </div>
-}
 
-type MessagePropsType = {
-    message: string
-}
-const Message=({message}:MessagePropsType)=> {
-    return <div className={S.message}>{message}</div>
-}
+
