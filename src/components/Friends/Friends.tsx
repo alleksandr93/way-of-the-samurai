@@ -1,8 +1,9 @@
 import React from 'react';
 import S from './Friends.module.css'
-import {SideBarType} from '../../App';
+import {SidebarType} from '../../redux/state';
+
 type FriendsPropsType = {
-    sidebar:SideBarType[]
+    sidebar:SidebarType[]
 }
 export const Friends = ({sidebar}:FriendsPropsType) => {
     const mapSidebar= sidebar.map(el=>{

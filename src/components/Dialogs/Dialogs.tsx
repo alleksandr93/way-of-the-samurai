@@ -3,12 +3,13 @@ import S from './Dialogs.module.css'
 import {NavLink} from 'react-router-dom';
 import {DialogItem} from './DialogItem/DialogsItem';
 import {Message} from './Message/Message';
-import {DialogsType, MessagesType} from '../../App';
+import {DialogsType, MessageType} from '../../redux/state';
+
 
 
 type DialogsPropsType = {
     dialogs:DialogsType[]
-    messages:MessagesType[]
+    messages:MessageType[]
 
 }
 export const Dialogs = ({dialogs,messages,}: DialogsPropsType) => {
