@@ -1,4 +1,4 @@
-
+import {type} from 'node:os';
 
 
 export type StateType = {
@@ -32,15 +32,27 @@ export type SidebarType = {
     name: string
 }
 
-export type StorType = {
-    _state: StateType
-    getState: () => StateType
-    addPost: () => void
-    updateNewPostText: (newText: string) => void
-    _callSubcriber: () => void
-    subscribe: (observer: () => void) => void
+export type AddPostActionType = {
+    type: 'ADD-POST'
 }
-export const stor: StorType = {
+export type updateNewPostTextActionType = {
+    type: 'UPDATE-NEW_POST'
+    payload: {
+        newText: string
+    }
+}
+
+export type ActionType = AddPostActionType | updateNewPostTextActionType
+
+export type StoreType = {
+    _state: StateType
+    _callSubcriber: () => void
+    getState: () => StateType
+    subscribe: (observer: () => void) => void
+    dispatch: (action: ActionType) => void
+}
+
+export const stor: StoreType = {
     _state: {
         propfilePage: {
             posts: [
@@ -72,31 +84,33 @@ export const stor: StorType = {
             {id: 3, name: 'Sveta'},
         ]
     },
-    getState() {
-        return this._state
-    },
-    addPost() {
-        debugger
-        let newPost = {
-            id: this._state.propfilePage.posts.length + 1,
-            message: this._state.propfilePage.newPostText,
-            likesCount: 0
-        }
-        debugger
-        this._state.propfilePage.posts.push(newPost)
-        this._state.propfilePage.newPostText = ''
-        this._callSubcriber()
-    },
-    updateNewPostText(newText: string) {
-        debugger
-        this._state.propfilePage.newPostText = newText
-        this._callSubcriber()
-    },
     _callSubcriber() {
         console.log('ooo')
     },
+
+    getState() {
+        return this._state
+    },
     subscribe(callback) {
         this._callSubcriber = callback // это патерн observer наблюдатель
+    },
+
+    dispatch(action: ActionType) {
+        if (action.type === 'ADD-POST') {
+            let newPost = {
+                id: this._state.propfilePage.posts.length + 1,
+                message: this._state.propfilePage.newPostText,
+                likesCount: 0
+            }
+            this._state.propfilePage.posts.push(newPost)
+            this._state.propfilePage.newPostText = ''
+            this._callSubcriber()
+        } else if (action.type === 'UPDATE-NEW_POST') {
+            this._state.propfilePage.newPostText = action.payload.newText
+            this._callSubcriber()
+        }else {
+            throw Error('Error')
+        }
     }
 }
 
