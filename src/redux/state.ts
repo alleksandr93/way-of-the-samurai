@@ -1,6 +1,3 @@
-import {type} from 'node:os';
-
-
 export type StateType = {
     propfilePage: PostsItems
     dialogPage: DialogPageType
@@ -9,6 +6,8 @@ export type StateType = {
 export type DialogPageType = {
     dialogs: DialogsType[]
     messages: MessageType[]
+    newMessageBody: string
+
 }
 export type DialogsType = {
     id: number
@@ -33,16 +32,27 @@ export type SidebarType = {
 }
 
 export type AddPostActionType = {
-    type: 'ADD-POST'
+    type: 'ADD_POST'
 }
 export type updateNewPostTextActionType = {
-    type: 'UPDATE-NEW_POST'
+    type: 'UPDATE_NEW_POST'
     payload: {
         newText: string
     }
 }
+export type AddMessageActionType = {
+    type: 'UPDATE_NEW-POST_TEXT'
+    payload: {
+        body: string
+    }
 
-export type ActionType = AddPostActionType | updateNewPostTextActionType
+}
+export type SendMessageActionType = {
+    type: 'SEND_MESSAGE'
+
+}
+
+export type ActionType = AddPostActionType | updateNewPostTextActionType | AddMessageActionType | SendMessageActionType
 
 export type StoreType = {
     _state: StateType
@@ -77,6 +87,7 @@ export const stor: StoreType = {
                 {id: 3, message: 'Yo'},
                 {id: 4, message: 'My message'},
             ],
+            newMessageBody: ''
         },
         sidebar: [
             {id: 1, name: 'Andrey'},
@@ -87,16 +98,14 @@ export const stor: StoreType = {
     _callSubcriber() {
         console.log('ooo')
     },
-
     getState() {
         return this._state
     },
     subscribe(callback) {
         this._callSubcriber = callback // это патерн observer наблюдатель
     },
-
     dispatch(action: ActionType) {
-        if (action.type === 'ADD-POST') {
+        if (action.type === 'ADD_POST') {
             let newPost = {
                 id: this._state.propfilePage.posts.length + 1,
                 message: this._state.propfilePage.newPostText,
@@ -105,13 +114,49 @@ export const stor: StoreType = {
             this._state.propfilePage.posts.push(newPost)
             this._state.propfilePage.newPostText = ''
             this._callSubcriber()
-        } else if (action.type === 'UPDATE-NEW_POST') {
+        } else if (action.type === 'UPDATE_NEW_POST') {
             this._state.propfilePage.newPostText = action.payload.newText
             this._callSubcriber()
-        }else {
+        } else if (action.type === 'UPDATE_NEW-POST_TEXT') {
+            this._state.dialogPage.newMessageBody = action.payload.body
+            this._callSubcriber()
+
+        } else if (action.type === 'SEND_MESSAGE') {
+            const body = this._state.dialogPage.newMessageBody
+            this._state.dialogPage.newMessageBody = ''
+            this._state.dialogPage.messages.push({id: this._state.dialogPage.messages.length + 1, message: body})
+            this._callSubcriber()
+        } else {
             throw Error('Error')
         }
     }
+}
+
+export const addPostActionCreator = () => {
+    return {
+        type: 'ADD_POST'
+    } as const
+}
+export const updateNewPostTextActionCreator = (newText: string) => {
+    return {
+        type: 'UPDATE_NEW_POST',
+        payload: {
+            newText
+        }
+    } as const
+}
+export const sendMessageActionCreator = () => {
+    return {
+        type: 'SEND_MESSAGE'
+    } as const
+}
+export const updateNewMessageBodyCreator = (body: string) => {
+    return {
+        type: 'UPDATE_NEW-POST_TEXT',
+        payload: {
+            body
+        }
+    } as const
 }
 
 

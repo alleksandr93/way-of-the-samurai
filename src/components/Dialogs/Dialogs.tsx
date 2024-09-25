@@ -1,37 +1,47 @@
-import React, {useRef} from 'react';
+import React, {ChangeEvent, useRef} from 'react';
 import S from './Dialogs.module.css'
 import {NavLink} from 'react-router-dom';
 import {DialogItem} from './DialogItem/DialogsItem';
 import {Message} from './Message/Message';
-import {DialogsType, MessageType} from '../../redux/state';
-
+import {
+    ActionType,
+    updateNewMessageBodyCreator,
+    DialogsType,
+    MessageType,
+    sendMessageActionCreator, StoreType
+} from '../../redux/state';
 
 
 type DialogsPropsType = {
-    dialogs:DialogsType[]
-    messages:MessageType[]
+    stor: StoreType
 
 }
-export const Dialogs = ({dialogs,messages,}: DialogsPropsType) => {
-    const addMessage=()=>{
-        if(areaRef.current){
-            alert(areaRef.current.value)
-        }
+export const Dialogs = ({stor}: DialogsPropsType) => {
+    const {dispatch} = stor
+    const state = stor.getState().dialogPage
+    const onSendMessageClick = () => {
+        dispatch(sendMessageActionCreator())
     }
-    const areaRef=useRef<HTMLTextAreaElement>(null)
-    const dialogsElements = dialogs.map(el => <DialogItem name={el.name} id={el.id} key={el.id}/>)
-    const messangesElements = messages.map(el => <Message message={el.message} key={el.id}/>)
+    const onNewMessangeChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        dispatch(updateNewMessageBodyCreator(e.currentTarget.value))
+    }
+    const dialogsElements = state.dialogs.map(el => <DialogItem name={el.name} id={el.id} key={el.id}/>)
+    const messangesElements = state.messages.map(el => <Message message={el.message} key={el.id}/>)
+    const newMessangeBody = state.newMessageBody
     return (
         <div className={S.dialogs}>
             <div className={S.dialogsItems}>
                 {dialogsElements}
             </div>
             <div className={S.messages}>
-                {messangesElements}
-            </div>
-            <div>
-                <textarea ref={areaRef}></textarea>
-                <button onClick={addMessage}>Add Message</button>
+                <div>{messangesElements}</div>
+                <div>
+                    <div><textarea placeholder={'Enter your message'} value={newMessangeBody}
+                                   onChange={onNewMessangeChange}></textarea></div>
+                    <div>
+                        <button onClick={onSendMessageClick}>Add Message</button>
+                    </div>
+                </div>
             </div>
         </div>
     );

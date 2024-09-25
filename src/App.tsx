@@ -8,17 +8,18 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import {News} from './components/News/News';
 import {Music} from './components/Music/Music';
 import {Settings} from './components/Settings/Settings';
-import {ActionType, StateType, StoreType} from './redux/state';
+import {StateType, StoreType} from './redux/state';
 
 
 type AppPropsType = {
     state: StateType
-    dispatch:(action: ActionType)=>void
+    stor: StoreType
 
 }
 
 
-function App({state,dispatch}: AppPropsType) {
+function App({state, stor}: AppPropsType) {
+    const {dispatch} = stor
     return (
         <BrowserRouter>
             <div className="app-wrapper">
@@ -26,8 +27,7 @@ function App({state,dispatch}: AppPropsType) {
                 <NavBar sidebar={state.sidebar}/>
                 <div className={'app-wrapper-content'}>
                     <Route path={'/dialogs/'}
-                           render={() => <Dialogs dialogs={state.dialogPage.dialogs}
-                                                  messages={state.dialogPage.messages}/>}/>
+                           render={() => <Dialogs stor={stor}/>}/>
                     <Route path={'/profile'}
                            render={() => <Profile profilePage={state.propfilePage} dispatch={dispatch}/>}/>
                     <Route path={'/news'} render={() => <News/>}/>
