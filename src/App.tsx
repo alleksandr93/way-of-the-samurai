@@ -8,18 +8,17 @@ import {BrowserRouter, Route} from 'react-router-dom';
 import {News} from './components/News/News';
 import {Music} from './components/Music/Music';
 import {Settings} from './components/Settings/Settings';
-import {StateType, StoreType} from './redux/state';
+import {ActionType, StateType, StoreType} from './redux/state';
 
 
 type AppPropsType = {
     state: StateType
-    stor: StoreType
+    dispatch: (action: ActionType) => void
+    stor:StoreType
 
 }
+function App({state, dispatch,stor}: AppPropsType) {
 
-
-function App({state, stor}: AppPropsType) {
-    const {dispatch} = stor
     return (
         <BrowserRouter>
             <div className="app-wrapper">

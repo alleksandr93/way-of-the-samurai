@@ -1,3 +1,7 @@
+import {addPostActionCreatorAC, profileReducer, updateNewPostTextActionCreatorAC} from './profile-reducer';
+import {dialogsReducer, sendMessageActionCreatorAC, updateNewMessageBodyCreatorAC} from './dialogs-reducer';
+import {sidebarReducer} from './sidebar-reducer';
+
 export type StateType = {
     propfilePage: PostsItems
     dialogPage: DialogPageType
@@ -31,26 +35,10 @@ export type SidebarType = {
     name: string
 }
 
-export type AddPostActionType = {
-    type: 'ADD_POST'
-}
-export type updateNewPostTextActionType = {
-    type: 'UPDATE_NEW_POST'
-    payload: {
-        newText: string
-    }
-}
-export type AddMessageActionType = {
-    type: 'UPDATE_NEW-POST_TEXT'
-    payload: {
-        body: string
-    }
-
-}
-export type SendMessageActionType = {
-    type: 'SEND_MESSAGE'
-
-}
+export type AddPostActionType = ReturnType<typeof addPostActionCreatorAC>
+export type updateNewPostTextActionType =ReturnType<typeof updateNewPostTextActionCreatorAC>
+export type AddMessageActionType = ReturnType<typeof updateNewMessageBodyCreatorAC>
+export type SendMessageActionType = ReturnType<typeof sendMessageActionCreatorAC>
 
 export type ActionType = AddPostActionType | updateNewPostTextActionType | AddMessageActionType | SendMessageActionType
 
@@ -96,7 +84,7 @@ export const stor: StoreType = {
         ]
     },
     _callSubcriber() {
-        console.log('ooo')
+        console.log('s')
     },
     getState() {
         return this._state
@@ -105,58 +93,15 @@ export const stor: StoreType = {
         this._callSubcriber = callback // это патерн observer наблюдатель
     },
     dispatch(action: ActionType) {
-        if (action.type === 'ADD_POST') {
-            let newPost = {
-                id: this._state.propfilePage.posts.length + 1,
-                message: this._state.propfilePage.newPostText,
-                likesCount: 0
-            }
-            this._state.propfilePage.posts.push(newPost)
-            this._state.propfilePage.newPostText = ''
-            this._callSubcriber()
-        } else if (action.type === 'UPDATE_NEW_POST') {
-            this._state.propfilePage.newPostText = action.payload.newText
-            this._callSubcriber()
-        } else if (action.type === 'UPDATE_NEW-POST_TEXT') {
-            this._state.dialogPage.newMessageBody = action.payload.body
-            this._callSubcriber()
+        this._state.propfilePage = profileReducer(this._state.propfilePage, action)
+        this._state.dialogPage = dialogsReducer(this._state.dialogPage, action)
+        this._state.sidebar = sidebarReducer(this._state.sidebar, action)
+        this._callSubcriber()
 
-        } else if (action.type === 'SEND_MESSAGE') {
-            const body = this._state.dialogPage.newMessageBody
-            this._state.dialogPage.newMessageBody = ''
-            this._state.dialogPage.messages.push({id: this._state.dialogPage.messages.length + 1, message: body})
-            this._callSubcriber()
-        } else {
-            throw Error('Error')
-        }
     }
 }
 
-export const addPostActionCreator = () => {
-    return {
-        type: 'ADD_POST'
-    } as const
-}
-export const updateNewPostTextActionCreator = (newText: string) => {
-    return {
-        type: 'UPDATE_NEW_POST',
-        payload: {
-            newText
-        }
-    } as const
-}
-export const sendMessageActionCreator = () => {
-    return {
-        type: 'SEND_MESSAGE'
-    } as const
-}
-export const updateNewMessageBodyCreator = (body: string) => {
-    return {
-        type: 'UPDATE_NEW-POST_TEXT',
-        payload: {
-            body
-        }
-    } as const
-}
+
+
 
 

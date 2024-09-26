@@ -9,7 +9,7 @@ import {StateType, stor} from './redux/state';
 
 const rerenderEntireTree=(state:StateType)=> {
     ReactDOM.render(
-        <App state={state} stor={stor}/>,
+        <App state={state} dispatch={stor.dispatch.bind(stor)} stor={stor}/>,
         document.getElementById('root')
     );
 }

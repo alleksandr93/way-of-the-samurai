@@ -1,33 +1,26 @@
-import React, {ChangeEvent, useRef} from 'react';
+import React, {ChangeEvent} from 'react';
 import S from './Dialogs.module.css'
-import {NavLink} from 'react-router-dom';
 import {DialogItem} from './DialogItem/DialogsItem';
 import {Message} from './Message/Message';
-import {
-    ActionType,
-    updateNewMessageBodyCreator,
-    DialogsType,
-    MessageType,
-    sendMessageActionCreator, StoreType
-} from '../../redux/state';
+import {StoreType} from '../../redux/state';
+import {sendMessageActionCreatorAC, updateNewMessageBodyCreatorAC} from '../../redux/dialogs-reducer';
 
 
 type DialogsPropsType = {
     stor: StoreType
-
 }
 export const Dialogs = ({stor}: DialogsPropsType) => {
-    const {dispatch} = stor
-    const state = stor.getState().dialogPage
+    const state = stor.getState()
+
     const onSendMessageClick = () => {
-        dispatch(sendMessageActionCreator())
+        stor.dispatch(sendMessageActionCreatorAC())
     }
     const onNewMessangeChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        dispatch(updateNewMessageBodyCreator(e.currentTarget.value))
+        stor.dispatch(updateNewMessageBodyCreatorAC(e.currentTarget.value))
     }
-    const dialogsElements = state.dialogs.map(el => <DialogItem name={el.name} id={el.id} key={el.id}/>)
-    const messangesElements = state.messages.map(el => <Message message={el.message} key={el.id}/>)
-    const newMessangeBody = state.newMessageBody
+    const dialogsElements = state.dialogPage.dialogs.map(el => <DialogItem name={el.name} id={el.id} key={el.id}/>)
+    const messangesElements = state.dialogPage.messages.map(el => <Message message={el.message} key={el.id}/>)
+    const newMessangeBody = state.dialogPage.newMessageBody
     return (
         <div className={S.dialogs}>
             <div className={S.dialogsItems}>
