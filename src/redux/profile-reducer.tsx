@@ -1,6 +1,24 @@
-import {ActionType, PostsItems} from './state';
 
-export const profileReducer = (state:PostsItems,action:ActionType) => {
+export type PostsType = {
+    id: number
+    message: string
+    likesCount: number
+}
+export type PostsItems = {
+    posts: PostsType[]
+    newPostText: string
+}
+
+
+const initialState = {
+    posts: [
+        {id: 1, message: 'Hi, how are you?', likesCount: 11},
+        {id: 2, message: 'Hi, my name is John', likesCount: 13},
+        {id: 3, message: 'it\'s my first post', likesCount: 5},
+    ],
+    newPostText: 'it-kamasutra'
+}
+export const profileReducer = (state:PostsItems=initialState,action:ActionType):PostsItems => {
    switch(action.type){
        case 'ADD_POST':
            let newPost = {
@@ -8,23 +26,22 @@ export const profileReducer = (state:PostsItems,action:ActionType) => {
                message: state.newPostText,
                likesCount: 0
            }
-           state.posts.push(newPost)
            state.newPostText = ''
-           return state
+           return {...state,posts:[...state.posts,newPost]};
        case 'UPDATE_NEW_POST':
         state.newPostText = action.payload.newText
-           return state
+           return {...state,newPostText: action.payload.newText}
        default:
            return state;
    }
 };
 
-export const addPostActionCreatorAC = () => {
+export const addPostAC = () => {
     return {
         type: 'ADD_POST'
     }as const
 }
-export const updateNewPostTextActionCreatorAC = (newText: string) => {
+export const updateNewPostTextAC = (newText: string) => {
     return {
         type: 'UPDATE_NEW_POST',
         payload: {
@@ -32,3 +49,6 @@ export const updateNewPostTextActionCreatorAC = (newText: string) => {
         }
     } as const
 }
+type AddPostType = ReturnType<typeof addPostAC>
+type UpdateNewPostTextType = ReturnType<typeof updateNewPostTextAC>
+type ActionType = AddPostType |UpdateNewPostTextType

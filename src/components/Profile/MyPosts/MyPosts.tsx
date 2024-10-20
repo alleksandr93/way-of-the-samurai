@@ -1,29 +1,26 @@
 import React, {useRef} from 'react';
 import S from './MyPosts.module.css';
-
 import {Post} from './Post/Post';
-import {ActionType, PostsType} from '../../../redux/state';
-import {addPostActionCreatorAC, updateNewPostTextActionCreatorAC} from '../../../redux/profile-reducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootState} from '../../../redux/redux-store';
+import {addPostAC, PostsType, updateNewPostTextAC} from '../../../redux/profile-reducer';
 
 
-
-type MyPostsPropsType = {
-    posts: PostsType[];
-    newPostText: string
-    dispatch: (action: ActionType) => void
-}
-export const MyPosts = ({posts, newPostText, dispatch}: MyPostsPropsType) => {
+export const MyPosts = () => {
+    const posts = useSelector<RootState,PostsType[]>(state => state.profilePage.posts)
+    const newPostText = useSelector<RootState,string>(state => state.profilePage.newPostText)
+    const dispatch = useDispatch();
     const postsElements = posts.map(el => <Post key={el.id} message={el.message} likesCount={el.likesCount}/>)
     const newPostElement = useRef<HTMLTextAreaElement>(null)
     const addPost = () => {
 
         if (newPostElement.current) {
-            dispatch(addPostActionCreatorAC())
+            dispatch(addPostAC())
         }
     }
     const onPostChange = () => {
         if (newPostElement.current) {
-            dispatch(updateNewPostTextActionCreatorAC(newPostElement.current.value));
+            dispatch(updateNewPostTextAC(newPostElement.current.value));
         }
 
     }

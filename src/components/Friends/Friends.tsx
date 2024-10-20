@@ -1,11 +1,12 @@
 import React from 'react';
 import S from './Friends.module.css'
-import {SidebarType} from '../../redux/state';
+import {useSelector} from 'react-redux';
+import {RootState} from '../../redux/redux-store';
+import {SidebarType} from '../../redux/sidebar-reducer';
 
-type FriendsPropsType = {
-    sidebar:SidebarType[]
-}
-export const Friends = ({sidebar}:FriendsPropsType) => {
+
+export const Friends = () => {
+    const sidebar = useSelector<RootState,SidebarType[]>(state => state.sidebarPage)
     const mapSidebar= sidebar.map(el=>{
         return <div key={el.id} className={S.container}>
             <div className={S.avatar}></div>
